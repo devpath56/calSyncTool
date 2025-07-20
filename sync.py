@@ -14,6 +14,7 @@ from icalendar import Calendar, Event as ICalEvent
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+#from config import Config
 from config import Config
 
 # Configure logging
