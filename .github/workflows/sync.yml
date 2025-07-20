@@ -44,3 +44,4 @@ jobs:
         name: sync-logs-${{ github.run_number }}
         path: sync.log
         retention-days: 7
+# trigger workflow
