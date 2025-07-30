@@ -269,8 +269,6 @@ class CalendarSync:
 
 def main():
     """Main entry point"""
-    def main():
-    """Main entry point"""
     try:
         # Debug: check environment variables
         print("DEBUG: GOOGLE_CLIENT_ID found? ", bool(os.getenv("GOOGLE_CLIENT_ID")))
