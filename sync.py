@@ -10,8 +10,8 @@ import logging
 from datetime import datetime, timezone, timedelta
 from typing import List, Dict, Optional
 import requests
-from icalendar import Calendar, Event as ICalEvent
 from google.oauth2.credentials import Credentials
+from icalendar import Calendar, Event as ICalEvent
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 #from config import Config
