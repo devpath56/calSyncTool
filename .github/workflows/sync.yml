@@ -7,36 +7,37 @@ on:
     - cron: '*/10 13-23 * * 1-5'  # Monday-Friday, 1:00-11:50 PM UTC
     - cron: '*/10 0-1 * * 2-6'    # Tuesday-Saturday, 12:00-1:50 AM UTC (covers 6pm previous day)
   
-  # Allow manual triggering
   workflow_dispatch:
 
 jobs:
   sync-calendar:
     runs-on: ubuntu-latest
-    
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
-    
+
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.11'
         cache: 'pip'
-    
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-    
+
+    - name: Export Google OAuth credentials to environment
+      run: |
+        echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> $GITHUB_ENV
+        echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> $GITHUB_ENV
+        echo "GOOGLE_REFRESH_TOKEN=${{ secrets.GOOGLE_REFRESH_TOKEN }}" >> $GITHUB_ENV
+
     - name: Run calendar sync
-      env:
-        GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
-        GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
-        GOOGLE_REFRESH_TOKEN: ${{ secrets.GOOGLE_REFRESH_TOKEN }}
       run: |
         python sync.py
-    
+
     - name: Upload sync logs
       if: always()
       uses: actions/upload-artifact@v4
@@ -44,4 +45,3 @@ jobs:
         name: sync-logs-${{ github.run_number }}
         path: sync.log
         retention-days: 7
-# trigger workflow
