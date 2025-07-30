@@ -3,15 +3,19 @@ name: Calendar Sync
 on:
   schedule:
     # Run every 10 minutes between 6am and 6pm (UTC) on weekdays
-    # This translates to 13:00-01:00 UTC (6am-6pm PST/PDT)
-    - cron: '*/10 13-23 * * 1-5'  # Monday-Friday, 1:00-11:50 PM UTC
-    - cron: '*/10 0-1 * * 2-6'    # Tuesday-Saturday, 12:00-1:50 AM UTC (covers 6pm previous day)
-  
+    - cron: '*/10 13-23 * * 1-5'
+    - cron: '*/10 0-1 * * 2-6'
+
   workflow_dispatch:
 
 jobs:
   sync-calendar:
     runs-on: ubuntu-latest
+
+    env:
+      GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+      GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+      GOOGLE_REFRESH_TOKEN: ${{ secrets.GOOGLE_REFRESH_TOKEN }}
 
     steps:
     - name: Checkout repository
@@ -28,15 +32,14 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Export Google OAuth credentials to environment
+    - name: Debug - Check environment variables (masked)
       run: |
-        echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> $GITHUB_ENV
-        echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> $GITHUB_ENV
-        echo "GOOGLE_REFRESH_TOKEN=${{ secrets.GOOGLE_REFRESH_TOKEN }}" >> $GITHUB_ENV
+        echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}"
+        echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}"
+        echo "GOOGLE_REFRESH_TOKEN=${{ secrets.GOOGLE_REFRESH_TOKEN }}"
 
     - name: Run calendar sync
-      run: |
-        python sync.py
+      run: python sync.py
 
     - name: Upload sync logs
       if: always()
