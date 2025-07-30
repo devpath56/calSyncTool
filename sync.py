@@ -269,6 +269,34 @@ class CalendarSync:
 
 def main():
     """Main entry point"""
+    def main():
+    """Main entry point"""
+    try:
+        # Debug: check environment variables
+        print("DEBUG: GOOGLE_CLIENT_ID found? ", bool(os.getenv("GOOGLE_CLIENT_ID")))
+        print("DEBUG: GOOGLE_CLIENT_SECRET found? ", bool(os.getenv("GOOGLE_CLIENT_SECRET")))
+        print("DEBUG: GOOGLE_REFRESH_TOKEN found? ", bool(os.getenv("GOOGLE_REFRESH_TOKEN")))
+
+        # Print configuration for debugging
+        Config.print_config()
+        print()
+        
+        # Initialize and run sync
+        sync = CalendarSync()
+        stats = sync.sync()
+        
+        print(f"Calendar sync completed successfully!")
+        print(f"Events processed: {stats['processed']}")
+        print(f"Events created: {stats['created']}")
+        print(f"Events skipped: {stats['skipped']}")
+        
+    except CalendarSyncError as e:
+        logger.error(f"Sync error: {e}")
+        sys.exit(1)
+    except Exception as e:
+        logger.error(f"Unexpected error: {e}")
+        sys.exit(1)
+    
     try:
         # Print configuration for debugging
         Config.print_config()
